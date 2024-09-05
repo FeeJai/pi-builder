@@ -36,7 +36,7 @@ export NC ?=
 PROJECT ?= common
 OS ?= arch
 export BOARD ?= rpi4
-export ARCH ?= arm
+export ARCH ?= aarch64
 STAGES ?= __init__ os pikvm-repo pistat watchdog rootdelay no-bluetooth no-audit ro restore-mirrorlist ssh-keygen __cleanup__
 BUILD_OPTS ?=
 
@@ -61,6 +61,10 @@ REBUILD ?= $(shell uuidgen)
 
 # =====
 export __HOST_ARCH := $(subst v7l,,$(shell uname -m))
+ifeq ($(__HOST_ARCH),arm64)
+export __HOST_ARCH := aarch64
+endif
+
 ifneq ($(__HOST_ARCH),x86_64)
 ifneq ($(__HOST_ARCH),$(ARCH))
 $(error Cross-arch ARM building like $(__HOST_ARCH)<->$(ARCH) is not supported)
@@ -225,7 +229,7 @@ _buildctx: | clean base qemu
 		&& echo "ENV $$var \$$$$var" >> $(_init) \
 	; done
 	#
-	echo -n > $(_BUILD_DIR)/Dockerfile
+	touch $(_BUILD_DIR)/Dockerfile
 	for stage in $(STAGES); do \
 		cat $(_BUILD_DIR)/stages/$$stage/Dockerfile.part >> $(_BUILD_DIR)/Dockerfile \
 	; done
