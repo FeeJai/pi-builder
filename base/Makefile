@@ -69,7 +69,7 @@ $(call append,,.tgz,$(_RPIOS_LIST)):
 
 $(call append,,.img,$(_RPIOS_LIST)):
 	$(call notempty,RPIOS_IMAGES_URL)
-	$(eval _arch = $(call contains,-arm,$@,armhf,arm64))
+	$(eval _arch = $(call contains,-arm,$@,armhf,aarch64))
 	rm -f $@.xz.tmp $@.tmp
 	set -Eeuo pipefail \
 		&& url=$(RPIOS_IMAGES_URL)/raspios_lite_$(_arch)/images \
